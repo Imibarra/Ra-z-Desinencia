@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafío: Raíz y Desinencia de Verbos</title>
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header-container {
+            width: 90%;
+            max-width: 700px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .secret-box {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: right;
+            font-size: 0.8em;
+            width: 150px;
+            margin-top: 5px;
+        }
+        .secret-box label {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+        .secret-box input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ced4da;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 700px;
+        }
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .question-box {
+            border: 2px solid #007bff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .verb-display {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #d9534f;
+            margin-bottom: 15px;
+        }
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .input-item {
+            flex: 1;
+            min-width: 150px;
+        }
+        .input-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .input-item input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: left;
+            min-height: 50px;
+        }
+        .correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .incorrect { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+
+        .score-display {
+            text-align: left;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        .completion-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+        }
+        .modal-content h2 {
+            color: #ffc107;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .modal-content input[type="text"] {
+            padding: 10px;
+            margin: 10px 0;
+            width: 80%;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .final-card {
+            background-color: #28a745;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        .final-card h3 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        .final-card p {
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-container">
+    <div class="score-display">
+        Puntuación: <span id="current-score">0</span> / 50
+    </div>
+    <div class="secret-box">
+        <label for="secret-code">Código Secreto</label>
+        <input type="password" id="secret-code" onkeydown="checkSecretCode(event)" maxlength="9">
+    </div>
+</div>
+
+<div class="container">
+    <h1>📚 Desafío de la Raíz y la Desinencia</h1>
+    
+    <div id="game-area">
+        <div class="question-box">
+            <p>Verbo a analizar (Pregunta <span id="current-q-number">1</span> de 50):</p>
+            <div class="verb-display" id="current-verb"></div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-item">
+                <label for="input-infinitivo">Infinitivo</label>
+                <input type="text" id="input-infinitivo">
+            </div>
+            <div class="input-item">
+                <label for="input-raiz">Raíz</label>
+                <input type="text" id="input-raiz">
+            </div>
+            <div class="input-item">
+                <label for="input-desinencia">Desinencia</label>
+                <input type="text" id="input-desinencia">
+            </div>
+        </div>
+
+        <button id="check-button" onclick="checkAnswer()">Comprobar</button>
+
+        <div class="feedback hidden" id="feedback-message"></div>
+
+        <button id="next-button" class="hidden" onclick="nextQuestion()">Siguiente Verbo &raquo;</button>
+    </div>
+</div>
+
+<div id="completion-modal" class="completion-modal">
+    <div class="modal-content">
+        <h2 id="champion-title">El mundo tiene un nuevo campeón de la desinencia</h2>
+        <p>¡Felicidades! Lograste 50 puntos.</p>
+        <input type="text" id="champion-name" placeholder="Escribe tu nombre aquí" onkeydown="handleNameInput(event)">
+        <button onclick="displayFinalCard()">Confirmar</button>
+        <div class="final-card" id="final-card">
+            <h3 id="card-name"></h3>
+            <p>Campeón de la Desinencia</p>
+            <p id="secret-number"></p>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // --- Datos de los Verbos ---
+    const VERBOS = [
+        ["permito", "permitir", "permit", "o"],
+        ["amaron", "amar", "am", "aron"],
+        ["rompió", "romper", "romp", "ió"],
+        ["subieron", "subir", "sub", "ieron"],
+        ["caminaste", "caminar", "camin", "aste"],
+        ["vivo", "vivir", "viv", "o"],
+        ["temerán", "temer", "tem", "erán"],
+        ["escuchó", "escuchar", "escuch", "ó"],
+        ["cosiste", "coser", "cos", "iste"],
+        ["insistes", "insistir", "insist", "es"],
+        ["entró", "entrar", "entr", "ó"],
+        ["aprendías", "aprender", "aprend", "ías"],
+        ["viajabas", "viajar", "viaj", "abas"],
+        ["corrimos", "correr", "corr", "imos"],
+        ["escribían", "escribir", "escrib", "ían"],
+        ["cociné", "cocinar", "cocin", "é"],
+        ["sometieron", "someter", "somet", "ieron"],
+        ["decido", "decidir", "decid", "o"],
+        ["bailará", "bailar", "bail", "ará"],
+        ["leen", "leer", "le", "en"],
+        ["abriste", "abrir", "abr", "iste"],
+        ["llamaremos", "llamar", "llam", "aremos"],
+        ["bebieron", "beber", "beb", "ieron"],
+        ["unes", "unir", "un", "es"],
+        ["miras", "mirar", "mir", "as"],
+        ["nadarán", "nadar", "nad", "arán"],
+        ["barrías", "barrer", "barr", "ías"],
+        ["existen", "existir", "exist", "en"],
+        ["pinto", "pintar", "pint", "o"],
+        ["meto", "meter", "met", "o"],
+        ["compraste", "comprar", "compr", "aste"],
+        ["cumplimos", "cumplir", "cumpl", "imos"],
+        ["prometemos", "prometer", "promet", "emos"],
+        ["trabajan", "trabajar", "trabaj", "an"],
+        ["admitían", "admitir", "admit", "ían"],
+        ["como", "comer", "com", "o"],
+        ["hablo", "hablar", "habl", "o"],
+        ["partirá", "partir", "part", "irá"],
+        ["esperaremos", "esperar", "esper", "aremos"],
+        ["venderé", "vender", "vend", "eré"],
+        ["estudiábamos", "estudiar", "estudi", "ábamos"],
+        ["recibiremos", "recibir", "recib", "iremos"],
+        ["buscaban", "buscar", "busc", "aban"],
+        ["describiremos", "describir", "describ", "iremos"],
+        ["limpias", "limpiar", "limpi", "as"],
+        ["omites", "omitir", "omit", "es"],
+        ["pintas", "pintar", "pint", "as"],
+        ["temes", "temer", "tem", "es"],
+        ["usas", "usar", "us", "as"],
+        ["correrás", "correr", "corr", "erás"]
+    ];
+
+    const SECRET_CODE = "741852963"; // Código para saltar
+
+    let shuffledVerbos = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let firstAttemptCorrect = true;
+
+    // --- Elementos DOM ---
+    const currentVerbElement = document.getElementById('current-verb');
+    const currentQNumberElement = document.getElementById('current-q-number');
+    const currentScoreElement = document.getElementById('current-score');
+    const inputInfinitivo = document.getElementById('input-infinitivo');
+    const inputRaiz = document.getElementById('input-raiz');
+    const inputDesinencia = document.getElementById('input-desinencia');
+    const checkButton = document.getElementById('check-button');
+    const nextButton = document.getElementById('next-button');
+    const feedbackMessage = document.getElementById('feedback-message');
+    const completionModal = document.getElementById('completion-modal');
+    const finalCard = document.getElementById('final-card');
+    const cardName = document.getElementById('card-name');
+    const secretNumberElement = document.getElementById('secret-number');
+    const secretCodeInput = document.getElementById('secret-code');
+
+    // Función para quitar tildes (acentos) para la comparación
+    function removeAccents(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    // Función para mezclar los verbos
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function loadQuestion() {
+        if (currentQuestionIndex >= shuffledVerbos.length) {
+            showCompletionModal();
+            return;
+        }
+
+        const [verb, , , ] = shuffledVerbos[currentQuestionIndex];
+
+        currentVerbElement.textContent = verb.toUpperCase();
+        currentQNumberElement.textContent = currentQuestionIndex + 1;
+        currentScoreElement.textContent = score;
+
+        // Limpiar inputs
+        inputInfinitivo.value = '';
+        inputRaiz.value = '';
+        inputDesinencia.value = '';
+
+        // Ocultar feedback y botón Siguiente
+        feedbackMessage.classList.add('hidden');
+        nextButton.classList.add('hidden');
+        checkButton.classList.remove('hidden');
+
+        // Habilitar inputs
+        inputInfinitivo.disabled = false;
+        inputRaiz.disabled = false;
+        inputDesinencia.disabled = false;
+
+        // Resetear el estado de acierto
+        firstAttemptCorrect = true;
+    }
+
+    function checkAnswer() {
+        const [verb_conj, correct_infinitivo, correct_raiz, correct_desinencia] = shuffledVerbos[currentQuestionIndex];
+
+        const user_infinitivo = inputInfinitivo.value.trim().toLowerCase();
+        const user_raiz = inputRaiz.value.trim().toLowerCase();
+        const user_desinencia = inputDesinencia.value.trim().toLowerCase();
+
+        let is_infinitivo_ok = user_infinitivo === correct_infinitivo;
+        let is_raiz_ok_soft = removeAccents(user_raiz) === removeAccents(correct_raiz);
+        let is_desinencia_ok_soft = removeAccents(user_desinencia) === removeAccents(correct_desinencia);
+
+        let all_correct_soft = is_infinitivo_ok && is_raiz_ok_soft && is_desinencia_ok_soft;
+        let html_feedback = '';
+
+        feedbackMessage.classList.remove('hidden', 'correct', 'incorrect', 'info');
+
+        if (all_correct_soft) {
+            const is_raiz_tilde_error = is_raiz_ok_soft && user_raiz !== correct_raiz;
+            const is_desinencia_tilde_error = is_desinencia_ok_soft && user_desinencia !== correct_desinencia;
+            
+            if (firstAttemptCorrect) {
+                score++;
+                html_feedback += '<p>✅ **¡CORRECTO!** Has ganado 1 punto.</p>';
+            } else {
+                 html_feedback += '<p>✅ **CORRECTO.** Corregido.</p>';
+            }
+
+            if (is_raiz_tilde_error || is_desinencia_tilde_error) {
+                html_feedback += '<p class="info">⚠️ **AVISO:** Recuerda usar las tildes correctas para la forma completa (' 
+                    + (is_raiz_tilde_error ? `Raíz: ${correct_raiz}` : '') 
+                    + (is_raiz_tilde_error && is_desinencia_tilde_error ? ' y ' : '')
+                    + (is_desinencia_tilde_error ? `Desinencia: ${correct_desinencia}` : '')
+                    + ').</p>';
+            }
+
+            feedbackMessage.innerHTML = html_feedback;
+            feedbackMessage.classList.add('correct');
+            
+            inputInfinitivo.disabled = true;
+            inputRaiz.disabled = true;
+            inputDesinencia.disabled = true;
+            checkButton.classList.add('hidden');
+            nextButton.classList.remove('hidden');
+            currentScoreElement.textContent = score;
+
+        } else {
+            feedbackMessage.classList.add('incorrect');
+            firstAttemptCorrect = false; 
+            html_feedback += '❌ **INCORRECTO.** Tienes que corregirlo para pasar al siguiente verbo:<br><br>';
+            
+            // Mostrar correcciones y autocompletar
+            html_feedback += `<p>• Infinitivo (correcto: **${correct_infinitivo}**)</p>`;
+            html_feedback += `<p>• Raíz (correcta: **${correct_raiz}**)</p>`;
+            html_feedback += `<p>• Desinencia (correcta: **${correct_desinencia}**)</p>`;
+            
+            feedbackMessage.innerHTML = html_feedback;
+
+            if (!is_infinitivo_ok) inputInfinitivo.value = correct_infinitivo;
+            if (!is_raiz_ok_soft) inputRaiz.value = correct_raiz;
+            if (!is_desinencia_ok_soft) inputDesinencia.value = correct_desinencia;
+        }
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        loadQuestion();
+    }
+    
+    function showCompletionModal() {
+        if (score === VERBOS.length) {
+            completionModal.style.display = 'flex';
+        } else {
+            alert(`Juego Terminado. Tu puntuación final es: ${score} / ${VERBOS.length}. ¡Sigue practicando!`);
+        }
+    }
+
+    function displayFinalCard() {
+        const name = document.getElementById('champion-name').value.trim();
+        if (name) {
+            const randomNumber = Math.floor(10000 + Math.random() * 90000); 
+            
+            cardName.textContent = name.toUpperCase();
+            secretNumberElement.textContent = `Tu número secreto es ${randomNumber}`;
+            
+            finalCard.style.display = 'block';
+            document.getElementById('champion-name').disabled = true;
+            document.querySelector('.modal-content button').disabled = true; // Deshabilita el botón Confirmar
+        } else {
+            alert('Por favor, escribe tu nombre para registrar tu hazaña.');
+        }
+    }
+
+    function handleNameInput(event) {
+        if (event.key === 'Enter') {
+            displayFinalCard();
+        }
+    }
+
+    function checkSecretCode(event) {
+        if (event.key === 'Enter') {
+            if (secretCodeInput.value === SECRET_CODE) {
+                // Saltar al penúltimo índice (49)
+                currentQuestionIndex = VERBOS.length - 1; 
+                score = VERBOS.length - 1; // 49 puntos
+                alert("Código aceptado. Saltando a la última pregunta con 49 puntos.");
+                loadQuestion();
+            } else {
+                alert("Código incorrecto.");
+            }
+            secretCodeInput.value = ''; // Limpiar el campo de código
+        }
+    }
+
+
+    function initGame() {
+        shuffledVerbos = shuffleArray([...VERBOS]); 
+        currentQuestionIndex = 0;
+        score = 0;
+        loadQuestion();
+    }
+
+    // Inicializar el juego al cargar la página
+    initGame();
+</script>
+
+</body>
+</html>
