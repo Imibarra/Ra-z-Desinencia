@@ -1,494 +1,964 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desafío: Raíz y Desinencia - Imanol Muñoz Ibarra</title>
-    <style>
-        /* Estilos CSS */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .header-container {
-            width: 90%;
-            max-width: 700px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-        .secret-box {
-            background-color: #e9ecef;
-            padding: 10px;
-            border-radius: 5px;
-            text-align: right;
-            font-size: 0.8em;
-            width: 150px;
-            margin-top: 5px;
-        }
-        .secret-box label {
-            display: block;
-            margin-bottom: 3px;
-            font-weight: bold;
-        }
-        .secret-box input {
-            width: 100%;
-            padding: 5px;
-            border: 1px solid #ced4da;
-            border-radius: 3px;
-            box-sizing: border-box;
-        }
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 700px;
-        }
-        h1 {
-            color: #0056b3;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .question-box {
-            border: 2px solid #007bff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .verb-display {
-            font-size: 2.2em;
-            font-weight: bold;
-            color: #d9534f;
-            margin-bottom: 15px;
-        }
-        .input-group {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-        .input-item {
-            flex: 1;
-            min-width: 150px;
-        }
-        .input-item label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-        .input-item input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 1em;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .feedback {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 4px;
-            text-align: left;
-            min-height: 50px;
-        }
-        .correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .incorrect { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .info { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raíz y desinencia I · Beta-Urreko</title>
+  <style>
+    :root {
+      --subject: #9F1239;
+      --subject-dark: #7f0f2e;
+      --subject-soft: #fff1f4;
+      --subject-soft-2: #ffe4eb;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --surface: #ffffff;
+      --background: #f8fafc;
+      --success: #2E7D32;
+      --success-soft: #e8f5e9;
+      --error: #C62828;
+      --error-soft: #ffebee;
+      --warning: #E67E22;
+      --warning-soft: #fff4e6;
+      --info: #1E88E5;
+      --info-soft: #eaf4ff;
+      --secondary: #6B7280;
+      --shadow: 0 18px 50px rgba(31, 41, 55, 0.12);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+    }
 
-        .score-display {
-            text-align: left;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #007bff;
-            margin-bottom: 15px;
-        }
-        .completion-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
-        }
-        .modal-content h2 {
-            color: #ffc107;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-        .modal-content input[type="text"] {
-            padding: 10px;
-            margin: 10px 0;
-            width: 80%;
-            border: 2px solid #007bff;
-            border-radius: 5px;
-            font-size: 1em;
-        }
-        .final-card {
-            background-color: #28a745;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            display: none;
-        }
-        .final-card h3 {
-            margin: 0;
-            font-size: 1.5em;
-        }
-        .final-card p {
-            font-size: 1.1em;
-            margin-top: 10px;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(159, 18, 57, 0.13), transparent 34rem),
+        linear-gradient(135deg, #fff7f9 0%, #f8fafc 45%, #eef2f7 100%);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px;
+    }
+
+    .app-shell {
+      width: min(100%, 980px);
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      background: rgba(255,255,255,0.9);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      color: var(--subject);
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
+    .brand-badge {
+      width: 40px;
+      height: 40px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--subject);
+      color: #ffffff;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 20px rgba(159, 18, 57, 0.26);
+    }
+
+    .subject-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: var(--subject-soft);
+      border: 1px solid var(--subject-soft-2);
+      color: var(--subject);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    main { padding: 26px; }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .hero {
+      text-align: center;
+      padding: 28px 16px 18px;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 12px;
+      color: var(--subject);
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin: 0 auto 24px;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.5vw, 1.15rem);
+      line-height: 1.5;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 24px auto 30px;
+      max-width: 800px;
+    }
+
+    .info-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      text-align: left;
+      box-shadow: 0 10px 24px rgba(31,41,55,0.06);
+    }
+
+    .info-card strong {
+      display: block;
+      color: var(--subject);
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+
+    .info-card span {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.35;
+    }
+
+
+    .explanation-panel {
+      max-width: 880px;
+      margin: 24px auto 30px;
+      text-align: left;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .concept-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      box-shadow: 0 10px 24px rgba(31,41,55,0.06);
+    }
+
+    .concept-tag {
+      display: inline-flex;
+      margin-bottom: 10px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--subject-soft);
+      color: var(--subject);
+      font-weight: 900;
+      font-size: 0.84rem;
+    }
+
+    .concept-card h2 {
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 1.12rem;
+    }
+
+    .concept-card p {
+      color: var(--muted);
+      line-height: 1.45;
+      margin-bottom: 8px;
+    }
+
+    .concept-card p:last-child { margin-bottom: 0; }
+
+    .example-line {
+      color: var(--text) !important;
+      font-size: 0.95rem;
+    }
+
+    .worked-example {
+      display: grid;
+      grid-template-columns: 1.4fr repeat(3, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--subject-soft-2);
+      background: linear-gradient(180deg, #ffffff 0%, var(--subject-soft) 100%);
+      color: var(--text);
+      box-shadow: 0 10px 24px rgba(159,18,57,0.08);
+    }
+
+    .worked-example div {
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.72);
+    }
+
+    .worked-example span {
+      display: block;
+      margin-top: 5px;
+      color: var(--subject);
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+
+    .activity-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .activity-title h2 {
+      margin: 0 0 4px;
+      color: var(--subject);
+      font-size: clamp(1.55rem, 4vw, 2.1rem);
+    }
+
+    .activity-title p { margin: 0; color: var(--muted); }
+
+    .score-card {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .metric {
+      padding: 10px 13px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(31,41,55,0.05);
+    }
+
+    .metric span { color: var(--subject); }
+
+    .progress-wrap {
+      height: 12px;
+      background: #f3f4f6;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--subject), #c81e53);
+      transition: width 0.25s ease;
+    }
+
+    .game-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: clamp(18px, 4vw, 28px);
+      box-shadow: 0 12px 30px rgba(31,41,55,0.08);
+    }
+
+    .question-card {
+      border: 1px solid var(--subject-soft-2);
+      background: linear-gradient(180deg, #ffffff 0%, var(--subject-soft) 100%);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .question-label {
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .verb-display {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-width: min(100%, 330px);
+      padding: 18px 24px;
+      border-radius: 20px;
+      color: var(--subject);
+      background: #ffffff;
+      border: 2px solid rgba(159, 18, 57, 0.18);
+      box-shadow: 0 12px 26px rgba(159,18,57,0.12);
+      font-size: clamp(2.2rem, 8vw, 4rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .input-item {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      box-shadow: 0 8px 18px rgba(31,41,55,0.045);
+    }
+
+    .input-item label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-weight: 800;
+      color: var(--subject);
+    }
+
+
+    input[type="text"] {
+      width: 100%;
+      border: 2px solid #d1d5db;
+      border-radius: 12px;
+      padding: 13px 14px;
+      font-size: 1.04rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+      background: #ffffff;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--subject);
+      box-shadow: 0 0 0 4px rgba(159, 18, 57, 0.12);
+    }
+
+    input:disabled {
+      background: #f9fafb;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+
+    .is-ok input { border-color: var(--success); background: var(--success-soft); }
+    .is-ko input { border-color: var(--error); background: var(--error-soft); }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 14px 20px;
+      transition: transform 0.1s ease, box-shadow 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover:not(:disabled) { transform: translateY(-1px); }
+    button:active:not(:disabled) { transform: translateY(0); }
+    button:focus-visible { outline: 4px solid rgba(30, 136, 229, 0.35); outline-offset: 3px; }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--subject);
+      color: #ffffff;
+      box-shadow: 0 10px 22px rgba(159,18,57,0.25);
+    }
+
+    .btn-primary:hover:not(:disabled) { background: var(--subject-dark); }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--subject);
+      border: 2px solid var(--subject-soft-2);
+      box-shadow: 0 8px 18px rgba(31,41,55,0.06);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #ffffff;
+      box-shadow: 0 10px 22px rgba(46,125,50,0.22);
+    }
+
+    .btn-wide { min-width: 210px; }
+
+    .hidden { display: none !important; }
+
+    .feedback {
+      display: none;
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .feedback.show { display: block; }
+    .feedback.success { background: var(--success-soft); color: var(--success); border-color: rgba(46,125,50,0.22); }
+    .feedback.error { background: var(--error-soft); color: var(--error); border-color: rgba(198,40,40,0.22); }
+    .feedback.warning { background: var(--warning-soft); color: #9a4a08; border-color: rgba(230,126,34,0.3); }
+    .feedback.info { background: var(--info-soft); color: #0f5c96; border-color: rgba(30,136,229,0.22); }
+    .feedback ul { margin: 10px 0 0; padding-left: 22px; }
+    .feedback p { margin: 0 0 8px; }
+    .feedback p:last-child { margin-bottom: 0; }
+
+
+    .final-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 24px;
+    }
+
+    .final-panel, .diploma-panel {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: clamp(18px, 4vw, 28px);
+      box-shadow: 0 12px 30px rgba(31,41,55,0.08);
+    }
+
+    .final-score {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 14px 18px;
+      border-radius: 18px;
+      background: var(--subject-soft);
+      color: var(--subject);
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+
+    .final-score strong { font-size: 2rem; }
+
+    .diploma {
+      display: none;
+      margin-top: 16px;
+      border: 2px solid rgba(159,18,57,0.24);
+      background: linear-gradient(180deg, #fff7f9 0%, #ffffff 100%);
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .diploma.show { display: block; }
+    .diploma-name { color: var(--subject); font-size: 1.55rem; font-weight: 900; margin: 10px 0; }
+    .secret-number { color: var(--success); font-weight: 900; }
+
+    .mini-note {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 0;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 14px; }
+      .topbar, .activity-header { grid-template-columns: 1fr; }
+      .topbar { align-items: flex-start; }
+      .subject-chip { align-self: flex-start; }
+      main { padding: 18px; }
+      .info-grid, .concept-grid, .worked-example, .input-grid, .final-grid { grid-template-columns: 1fr; }
+      .score-card { justify-content: flex-start; }
+      .button-row { flex-direction: column; }
+      button, .btn-wide { width: 100%; }
+    }
+  </style>
 </head>
 <body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand" aria-label="Beta-Urreko">
+        <span class="brand-badge">BU</span>
+        <span>Beta-Urreko</span>
+      </div>
+      <div class="subject-chip">Lengua Castellana · Nivel I</div>
+    </header>
 
-<div class="header-container">
-    <div class="score-display">
-        Puntuación: <span id="current-score">0</span> / 50
-    </div>
-    <div class="secret-box">
-        <label for="secret-code">Código Secreto</label>
-        <input type="password" id="secret-code" onkeydown="checkSecretCode(event)" maxlength="9">
-    </div>
-</div>
+    <main>
+      <section id="start-screen" class="screen active">
+        <div class="hero">
+          <h1>Raíz y desinencia</h1>
+          <p class="subtitle">Antes de empezar, repasa la diferencia entre infinitivo, raíz y desinencia. Después pulsa Comenzar para practicar con los verbos.</p>
 
-<div class="container">
-    <h1>📚 Desafío de la Raíz y la Desinencia</h1>
-    
-    <div id="game-area">
-        <div class="question-box">
-            <p>Verbo a analizar (Pregunta <span id="current-q-number">1</span> de 50):</p>
-            <div class="verb-display" id="current-verb"></div>
+          <div class="explanation-panel" aria-label="Explicación de raíz y desinencia">
+            <div class="concept-grid">
+              <div class="concept-card">
+                <span class="concept-tag">Infinitivo</span>
+                <h2>La forma base del verbo</h2>
+                <p>Es el verbo sin conjugar. Termina en <strong>-ar</strong>, <strong>-er</strong> o <strong>-ir</strong>.</p>
+                <p class="example-line"><strong>Ejemplos:</strong> cantar, comer, vivir.</p>
+              </div>
+
+              <div class="concept-card">
+                <span class="concept-tag">Raíz</span>
+                <h2>La parte que suele mantenerse</h2>
+                <p>Se obtiene quitando la terminación del infinitivo. Aporta el significado principal del verbo.</p>
+                <p class="example-line"><strong>Ejemplos:</strong> cantar → cant, comer → com, vivir → viv.</p>
+              </div>
+
+              <div class="concept-card">
+                <span class="concept-tag">Desinencia</span>
+                <h2>La parte que cambia</h2>
+                <p>Es lo que se añade a la raíz al conjugar. Indica información como persona, número o tiempo.</p>
+                <p class="example-line"><strong>Ejemplos:</strong> cantábamos → ábamos, comeré → eré, vivieron → ieron.</p>
+              </div>
+            </div>
+
+            <div class="worked-example" aria-label="Ejemplo resuelto">
+              <div>
+                <strong>Ejemplo resuelto:</strong>
+                <span>cantábamos</span>
+              </div>
+              <div><strong>Infinitivo:</strong> cantar</div>
+              <div><strong>Raíz:</strong> cant</div>
+              <div><strong>Desinencia:</strong> ábamos</div>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="btn-primary btn-wide" type="button" onclick="startGame()">Comenzar</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="game-screen" class="screen">
+        <div class="activity-header">
+          <div class="activity-title">
+            <h2>Desafío de raíz y desinencia</h2>
+            <p>Completa los tres campos y pulsa Comprobar.</p>
+          </div>
+          <div class="score-card" aria-label="Progreso y puntuación">
+            <div class="metric">Pregunta <span id="current-q-number">1</span>/<span id="total-q-number">50</span></div>
+            <div class="metric">Puntuación <span id="current-score">0</span>/<span id="total-score">50</span></div>
+          </div>
         </div>
 
-        <div class="input-group">
-            <div class="input-item">
-                <label for="input-infinitivo">Infinitivo</label>
-                <input type="text" id="input-infinitivo">
-            </div>
-            <div class="input-item">
-                <label for="input-raiz">Raíz</label>
-                <input type="text" id="input-raiz">
-            </div>
-            <div class="input-item">
-                <label for="input-desinencia">Desinencia</label>
-                <input type="text" id="input-desinencia">
-            </div>
+        <div class="progress-wrap" aria-hidden="true">
+          <div id="progress-bar" class="progress-bar"></div>
         </div>
 
-        <button id="check-button" onclick="checkAnswer()">Comprobar</button>
+        <div class="game-card">
+          <div class="question-card">
+            <p class="question-label">Verbo a analizar</p>
+            <div class="verb-display" id="current-verb">—</div>
+          </div>
 
-        <div class="feedback hidden" id="feedback-message"></div>
+          <div class="input-grid">
+            <div class="input-item" id="wrap-infinitivo">
+              <label for="input-infinitivo">Infinitivo</label>
+              <input type="text" id="input-infinitivo" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="input-item" id="wrap-raiz">
+              <label for="input-raiz">Raíz</label>
+              <input type="text" id="input-raiz" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="input-item" id="wrap-desinencia">
+              <label for="input-desinencia">Desinencia</label>
+              <input type="text" id="input-desinencia" autocomplete="off" spellcheck="false" />
+            </div>
+          </div>
 
-        <button id="next-button" class="hidden" onclick="nextQuestion()">Siguiente Verbo &raquo;</button>
-    </div>
-</div>
+          <div class="button-row">
+            <button id="check-button" class="btn-primary btn-wide" type="button" onclick="checkAnswer()">Comprobar</button>
+            <button id="next-button" class="btn-success btn-wide hidden" type="button" onclick="nextQuestion()">Siguiente verbo</button>
+            <button class="btn-secondary" type="button" onclick="showStartScreen()">Volver al inicio</button>
+          </div>
 
-<div id="completion-modal" class="completion-modal">
-    <div class="modal-content">
-        <h2 id="champion-title">El mundo tiene un nuevo campeón de la desinencia</h2>
-        <p>¡Felicidades! Lograste 50 puntos.</p>
-        <input type="text" id="champion-name" placeholder="Escribe tu nombre aquí" onkeydown="handleNameInput(event)">
-        <button onclick="displayFinalCard()">Confirmar</button>
-        <div class="final-card" id="final-card">
-            <h3 id="card-name"></h3>
-            <p>Campeón de la Desinencia</p>
-            <p id="secret-number"></p>
+          <div class="feedback" id="feedback-message" role="status" aria-live="polite"></div>
         </div>
-    </div>
-</div>
 
+      </section>
 
-<script>
-    // --- Datos de los Verbos ---
+      <section id="final-screen" class="screen">
+        <div class="hero">
+          <h1>Actividad terminada</h1>
+          <p class="subtitle" id="final-message">Has completado todos los verbos.</p>
+        </div>
+
+        <div class="final-grid">
+          <div class="final-panel">
+            <div class="final-score"><strong id="final-score">0</strong><span>/ 50 puntos</span></div>
+            <p id="final-advice" class="subtitle" style="text-align:left; margin: 0 0 18px;">Buen trabajo. Repite la actividad para mejorar tu precisión.</p>
+            <div class="button-row" style="justify-content:flex-start;">
+              <button class="btn-primary" type="button" onclick="restartGame()">Repetir actividad</button>
+              <button class="btn-secondary" type="button" onclick="showStartScreen()">Volver al inicio</button>
+            </div>
+          </div>
+
+          <div class="diploma-panel" id="diploma-panel">
+            <h2>Trofeo de la desinencia</h2>
+            <p class="mini-note" id="diploma-intro">Si has logrado la puntuación máxima, escribe tu nombre para generar tu tarjeta.</p>
+            <input type="text" id="champion-name" placeholder="Tu nombre" autocomplete="off" onkeydown="handleNameInput(event)" />
+            <div class="button-row" style="justify-content:flex-start;">
+              <button class="btn-success" id="diploma-button" type="button" onclick="displayFinalCard()">Crear tarjeta</button>
+            </div>
+            <div class="diploma" id="final-card">
+              <div>🏆 Campeón/a de la Desinencia 🏆</div>
+              <div class="diploma-name" id="card-name"></div>
+              <p class="secret-number" id="secret-number"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
     const VERBOS = [
-        ["permito", "permitir", "permit", "o"],
-        ["amaron", "amar", "am", "aron"],
-        ["rompió", "romper", "romp", "ió"],
-        ["subieron", "subir", "sub", "ieron"],
-        ["caminaste", "caminar", "camin", "aste"],
-        ["vivo", "vivir", "viv", "o"],
-        ["temerán", "temer", "tem", "erán"],
-        ["escuchó", "escuchar", "escuch", "ó"],
-        ["cosiste", "coser", "cos", "iste"],
-        ["insistes", "insistir", "insist", "es"],
-        ["entró", "entrar", "entr", "ó"],
-        ["aprendías", "aprender", "aprend", "ías"],
-        ["viajabas", "viajar", "viaj", "abas"],
-        ["corrimos", "correr", "corr", "imos"],
-        ["escribían", "escribir", "escrib", "ían"],
-        ["cociné", "cocinar", "cocin", "é"],
-        ["sometieron", "someter", "somet", "ieron"],
-        ["decido", "decidir", "decid", "o"],
-        ["bailará", "bailar", "bail", "ará"],
-        ["leen", "leer", "le", "en"],
-        ["abriste", "abrir", "abr", "iste"],
-        ["llamaremos", "llamar", "llam", "aremos"],
-        ["bebieron", "beber", "beb", "ieron"],
-        ["unes", "unir", "un", "es"],
-        ["miras", "mirar", "mir", "as"],
-        ["nadarán", "nadar", "nad", "arán"],
-        ["barrías", "barrer", "barr", "ías"],
-        ["existen", "existir", "exist", "en"],
-        ["pinto", "pintar", "pint", "o"],
-        ["meto", "meter", "met", "o"],
-        ["compraste", "comprar", "compr", "aste"],
-        ["cumplimos", "cumplir", "cumpl", "imos"],
-        ["prometemos", "prometer", "promet", "emos"],
-        ["trabajan", "trabajar", "trabaj", "an"],
-        ["admitían", "admitir", "admit", "ían"],
-        ["como", "comer", "com", "o"],
-        ["hablo", "hablar", "habl", "o"],
-        ["partirá", "partir", "part", "irá"],
-        ["esperaremos", "esperar", "esper", "aremos"],
-        ["venderé", "vender", "vend", "eré"],
-        ["estudiábamos", "estudiar", "estudi", "ábamos"],
-        ["recibiremos", "recibir", "recib", "iremos"],
-        ["buscaban", "buscar", "busc", "aban"],
-        ["describiremos", "describir", "describ", "iremos"],
-        ["limpias", "limpiar", "limpi", "as"],
-        ["omites", "omitir", "omit", "es"],
-        ["pintas", "pintar", "pint", "as"],
-        ["temes", "temer", "tem", "es"],
-        ["usas", "usar", "us", "as"],
-        ["correrás", "correr", "corr", "erás"]
+      ["permito", "permitir", "permit", "o"],
+      ["amaron", "amar", "am", "aron"],
+      ["rompió", "romper", "romp", "ió"],
+      ["subieron", "subir", "sub", "ieron"],
+      ["caminaste", "caminar", "camin", "aste"],
+      ["vivo", "vivir", "viv", "o"],
+      ["temerán", "temer", "tem", "erán"],
+      ["escuchó", "escuchar", "escuch", "ó"],
+      ["cosiste", "coser", "cos", "iste"],
+      ["insistes", "insistir", "insist", "es"],
+      ["entró", "entrar", "entr", "ó"],
+      ["aprendías", "aprender", "aprend", "ías"],
+      ["viajabas", "viajar", "viaj", "abas"],
+      ["corrimos", "correr", "corr", "imos"],
+      ["escribían", "escribir", "escrib", "ían"],
+      ["cociné", "cocinar", "cocin", "é"],
+      ["sometieron", "someter", "somet", "ieron"],
+      ["decido", "decidir", "decid", "o"],
+      ["bailará", "bailar", "bail", "ará"],
+      ["leen", "leer", "le", "en"],
+      ["abriste", "abrir", "abr", "iste"],
+      ["llamaremos", "llamar", "llam", "aremos"],
+      ["bebieron", "beber", "beb", "ieron"],
+      ["unes", "unir", "un", "es"],
+      ["miras", "mirar", "mir", "as"],
+      ["nadarán", "nadar", "nad", "arán"],
+      ["barrías", "barrer", "barr", "ías"],
+      ["existen", "existir", "exist", "en"],
+      ["pinto", "pintar", "pint", "o"],
+      ["meto", "meter", "met", "o"],
+      ["compraste", "comprar", "compr", "aste"],
+      ["cumplimos", "cumplir", "cumpl", "imos"],
+      ["prometemos", "prometer", "promet", "emos"],
+      ["trabajan", "trabajar", "trabaj", "an"],
+      ["admitían", "admitir", "admit", "ían"],
+      ["como", "comer", "com", "o"],
+      ["hablo", "hablar", "habl", "o"],
+      ["partirá", "partir", "part", "irá"],
+      ["esperaremos", "esperar", "esper", "aremos"],
+      ["venderé", "vender", "vend", "eré"],
+      ["estudiábamos", "estudiar", "estudi", "ábamos"],
+      ["recibiremos", "recibir", "recib", "iremos"],
+      ["buscaban", "buscar", "busc", "aban"],
+      ["describiremos", "describir", "describ", "iremos"],
+      ["limpias", "limpiar", "limpi", "as"],
+      ["omites", "omitir", "omit", "es"],
+      ["pintas", "pintar", "pint", "as"],
+      ["temes", "temer", "tem", "es"],
+      ["usas", "usar", "us", "as"],
+      ["correrás", "correr", "corr", "erás"]
     ];
 
-    const SECRET_CODE = "741852963"; // Código para saltar
 
     let shuffledVerbos = [];
     let currentQuestionIndex = 0;
     let score = 0;
     let firstAttemptCorrect = true;
 
-    // --- Elementos DOM ---
+    const screens = {
+      start: document.getElementById('start-screen'),
+      game: document.getElementById('game-screen'),
+      final: document.getElementById('final-screen')
+    };
+
     const currentVerbElement = document.getElementById('current-verb');
     const currentQNumberElement = document.getElementById('current-q-number');
+    const totalQNumberElement = document.getElementById('total-q-number');
     const currentScoreElement = document.getElementById('current-score');
+    const totalScoreElement = document.getElementById('total-score');
+    const progressBar = document.getElementById('progress-bar');
     const inputInfinitivo = document.getElementById('input-infinitivo');
     const inputRaiz = document.getElementById('input-raiz');
     const inputDesinencia = document.getElementById('input-desinencia');
     const checkButton = document.getElementById('check-button');
     const nextButton = document.getElementById('next-button');
     const feedbackMessage = document.getElementById('feedback-message');
-    const completionModal = document.getElementById('completion-modal');
+    const finalScore = document.getElementById('final-score');
+    const finalMessage = document.getElementById('final-message');
+    const finalAdvice = document.getElementById('final-advice');
+    const diplomaPanel = document.getElementById('diploma-panel');
+    const diplomaIntro = document.getElementById('diploma-intro');
+    const championName = document.getElementById('champion-name');
+    const diplomaButton = document.getElementById('diploma-button');
     const finalCard = document.getElementById('final-card');
     const cardName = document.getElementById('card-name');
     const secretNumberElement = document.getElementById('secret-number');
-    const secretCodeInput = document.getElementById('secret-code');
 
-    // Función para quitar tildes (acentos) para la comparación
-    function removeAccents(str) {
-        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const fields = [
+      { key: 'infinitivo', input: inputInfinitivo, wrap: document.getElementById('wrap-infinitivo'), label: 'Infinitivo' },
+      { key: 'raiz', input: inputRaiz, wrap: document.getElementById('wrap-raiz'), label: 'Raíz' },
+      { key: 'desinencia', input: inputDesinencia, wrap: document.getElementById('wrap-desinencia'), label: 'Desinencia' }
+    ];
+
+    function showScreen(name) {
+      Object.values(screens).forEach(screen => screen.classList.remove('active'));
+      screens[name].classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Función para mezclar los verbos
+    function showStartScreen() {
+      showScreen('start');
+    }
+
+    function startGame() {
+      initGame();
+      showScreen('game');
+      setTimeout(() => inputInfinitivo.focus(), 80);
+    }
+
+    function restartGame() {
+      startGame();
+    }
+
+    function removeAccents(str) {
+      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function normalizeAnswer(str) {
+      return str.trim().toLowerCase();
+    }
+
     function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function initGame() {
+      shuffledVerbos = shuffleArray([...VERBOS]);
+      currentQuestionIndex = 0;
+      score = 0;
+      totalQNumberElement.textContent = VERBOS.length;
+      totalScoreElement.textContent = VERBOS.length;
+      loadQuestion();
     }
 
     function loadQuestion() {
-        if (currentQuestionIndex >= shuffledVerbos.length) {
-            showCompletionModal();
-            return;
-        }
+      if (currentQuestionIndex >= shuffledVerbos.length) {
+        showFinalScreen();
+        return;
+      }
 
-        const [verb, , , ] = shuffledVerbos[currentQuestionIndex];
+      const [verb] = shuffledVerbos[currentQuestionIndex];
+      currentVerbElement.textContent = verb;
+      currentQNumberElement.textContent = currentQuestionIndex + 1;
+      currentScoreElement.textContent = score;
+      progressBar.style.width = `${(currentQuestionIndex / shuffledVerbos.length) * 100}%`;
 
-        currentVerbElement.textContent = verb.toUpperCase();
-        currentQNumberElement.textContent = currentQuestionIndex + 1;
-        currentScoreElement.textContent = score;
+      fields.forEach(({ input, wrap }) => {
+        input.value = '';
+        input.disabled = false;
+        wrap.classList.remove('is-ok', 'is-ko');
+      });
 
-        // Limpiar inputs
-        inputInfinitivo.value = '';
-        inputRaiz.value = '';
-        inputDesinencia.value = '';
+      feedbackMessage.className = 'feedback';
+      feedbackMessage.innerHTML = '';
+      nextButton.classList.add('hidden');
+      checkButton.classList.remove('hidden');
+      checkButton.disabled = false;
+      firstAttemptCorrect = true;
+    }
 
-        // Ocultar feedback y botón Siguiente
-        feedbackMessage.classList.add('hidden');
-        nextButton.classList.add('hidden');
-        checkButton.classList.remove('hidden');
-
-        // Habilitar inputs
-        inputInfinitivo.disabled = false;
-        inputRaiz.disabled = false;
-        inputDesinencia.disabled = false;
-
-        // Resetear el estado de acierto
-        firstAttemptCorrect = true;
+    function getCurrentCorrectData() {
+      const [verb, infinitivo, raiz, desinencia] = shuffledVerbos[currentQuestionIndex];
+      return { verb, infinitivo, raiz, desinencia };
     }
 
     function checkAnswer() {
-        const [verb_conj, correct_infinitivo, correct_raiz, correct_desinencia] = shuffledVerbos[currentQuestionIndex];
+      if (currentQuestionIndex >= shuffledVerbos.length) return;
 
-        const user_infinitivo = inputInfinitivo.value.trim().toLowerCase();
-        const user_raiz = inputRaiz.value.trim().toLowerCase();
-        const user_desinencia = inputDesinencia.value.trim().toLowerCase();
+      const correct = getCurrentCorrectData();
+      const user = {
+        infinitivo: normalizeAnswer(inputInfinitivo.value),
+        raiz: normalizeAnswer(inputRaiz.value),
+        desinencia: normalizeAnswer(inputDesinencia.value)
+      };
 
-        let is_infinitivo_ok = user_infinitivo === correct_infinitivo;
-        let is_raiz_ok_soft = removeAccents(user_raiz) === removeAccents(correct_raiz);
-        let is_desinencia_ok_soft = removeAccents(user_desinencia) === removeAccents(correct_desinencia);
+      if (!user.infinitivo || !user.raiz || !user.desinencia) {
+        showFeedback('warning', '<strong>Falta completar algún campo.</strong><p>Escribe infinitivo, raíz y desinencia antes de comprobar.</p>');
+        return;
+      }
 
-        let all_correct_soft = is_infinitivo_ok && is_raiz_ok_soft && is_desinencia_ok_soft;
-        let html_feedback = '';
+      const checks = {
+        infinitivo: user.infinitivo === correct.infinitivo,
+        raiz: removeAccents(user.raiz) === removeAccents(correct.raiz),
+        desinencia: removeAccents(user.desinencia) === removeAccents(correct.desinencia)
+      };
 
-        feedbackMessage.classList.remove('hidden', 'correct', 'incorrect', 'info');
+      fields.forEach(({ key, wrap }) => {
+        wrap.classList.toggle('is-ok', checks[key]);
+        wrap.classList.toggle('is-ko', !checks[key]);
+      });
 
-        if (all_correct_soft) {
-            const is_raiz_tilde_error = is_raiz_ok_soft && user_raiz !== correct_raiz;
-            const is_desinencia_tilde_error = is_desinencia_ok_soft && user_desinencia !== correct_desinencia;
-            
-            if (firstAttemptCorrect) {
-                score++;
-                html_feedback += '<p>✅ **¡CORRECTO!** Has ganado 1 punto.</p>';
-            } else {
-                 html_feedback += '<p>✅ **CORRECTO.** Corregido.</p>';
-            }
+      const allCorrect = checks.infinitivo && checks.raiz && checks.desinencia;
 
-            if (is_raiz_tilde_error || is_desinencia_tilde_error) {
-                html_feedback += '<p class="info">⚠️ **AVISO:** Recuerda usar las tildes correctas para la forma completa (' 
-                    + (is_raiz_tilde_error ? `Raíz: ${correct_raiz}` : '') 
-                    + (is_raiz_tilde_error && is_desinencia_tilde_error ? ' y ' : '')
-                    + (is_desinencia_tilde_error ? `Desinencia: ${correct_desinencia}` : '')
-                    + ').</p>';
-            }
+      if (allCorrect) {
+        const accentWarnings = [];
+        if (checks.raiz && user.raiz !== correct.raiz) accentWarnings.push(`raíz: <strong>${correct.raiz}</strong>`);
+        if (checks.desinencia && user.desinencia !== correct.desinencia) accentWarnings.push(`desinencia: <strong>${correct.desinencia}</strong>`);
 
-            feedbackMessage.innerHTML = html_feedback;
-            feedbackMessage.classList.add('correct');
-            
-            inputInfinitivo.disabled = true;
-            inputRaiz.disabled = true;
-            inputDesinencia.disabled = true;
-            checkButton.classList.add('hidden');
-            nextButton.classList.remove('hidden');
-            currentScoreElement.textContent = score;
+        if (firstAttemptCorrect) score++;
+        currentScoreElement.textContent = score;
 
-        } else {
-            feedbackMessage.classList.add('incorrect');
-            firstAttemptCorrect = false; 
-            html_feedback += '❌ **INCORRECTO.** Tienes que corregirlo para pasar al siguiente verbo:<br><br>';
-            
-            // Mostrar correcciones y autocompletar
-            html_feedback += `<p>• Infinitivo (correcto: **${correct_infinitivo}**)</p>`;
-            html_feedback += `<p>• Raíz (correcta: **${correct_raiz}**)</p>`;
-            html_feedback += `<p>• Desinencia (correcta: **${correct_desinencia}**)</p>`;
-            
-            feedbackMessage.innerHTML = html_feedback;
+        fields.forEach(({ input }) => input.disabled = true);
+        checkButton.classList.add('hidden');
+        nextButton.classList.remove('hidden');
 
-            if (!is_infinitivo_ok) inputInfinitivo.value = correct_infinitivo;
-            if (!is_raiz_ok_soft) inputRaiz.value = correct_raiz;
-            if (!is_desinencia_ok_soft) inputDesinencia.value = correct_desinencia;
+        let message = firstAttemptCorrect
+          ? '<strong>Correcto.</strong><p>Has ganado 1 punto.</p>'
+          : '<strong>Correcto.</strong><p>Has corregido el verbo. No suma punto porque no fue en el primer intento.</p>';
+
+        if (accentWarnings.length > 0) {
+          message += `<p>Atención a las tildes: ${accentWarnings.join(' y ')}.</p>`;
         }
+
+        showFeedback('success', message);
+        nextButton.focus();
+      } else {
+        firstAttemptCorrect = false;
+        const details = [];
+        if (!checks.infinitivo) details.push(`<li>Infinitivo: <strong>${correct.infinitivo}</strong></li>`);
+        if (!checks.raiz) details.push(`<li>Raíz: <strong>${correct.raiz}</strong></li>`);
+        if (!checks.desinencia) details.push(`<li>Desinencia: <strong>${correct.desinencia}</strong></li>`);
+
+        if (!checks.infinitivo) inputInfinitivo.value = correct.infinitivo;
+        if (!checks.raiz) inputRaiz.value = correct.raiz;
+        if (!checks.desinencia) inputDesinencia.value = correct.desinencia;
+
+        showFeedback('error', `<strong>No es correcto.</strong><p>Corrige los campos marcados para continuar.</p><ul>${details.join('')}</ul>`);
+      }
+    }
+
+    function showFeedback(type, html) {
+      feedbackMessage.className = `feedback show ${type}`;
+      feedbackMessage.innerHTML = html;
     }
 
     function nextQuestion() {
-        currentQuestionIndex++;
-        loadQuestion();
+      currentQuestionIndex++;
+      loadQuestion();
+      if (currentQuestionIndex < shuffledVerbos.length) {
+        setTimeout(() => inputInfinitivo.focus(), 80);
+      }
     }
-    
-    function showCompletionModal() {
-        if (score === VERBOS.length) {
-            completionModal.style.display = 'flex';
-        } else {
-            alert(`Juego Terminado. Tu puntuación final es: ${score} / ${VERBOS.length}. ¡Sigue practicando!`);
-        }
+
+    function showFinalScreen() {
+      progressBar.style.width = '100%';
+      finalScore.textContent = score;
+      finalMessage.textContent = `Has completado los ${VERBOS.length} verbos.`;
+
+      finalCard.classList.remove('show');
+      championName.value = '';
+      championName.disabled = false;
+      diplomaButton.disabled = false;
+
+      if (score === VERBOS.length) {
+        finalAdvice.textContent = 'Perfecto: has conseguido todos los puntos. Ya puedes crear tu tarjeta de campeón/a.';
+        diplomaPanel.style.display = 'block';
+        diplomaIntro.textContent = 'Has logrado la puntuación máxima. Escribe tu nombre para generar tu tarjeta.';
+      } else {
+        finalAdvice.textContent = 'Buen trabajo. Repite la actividad para intentar llegar a la puntuación máxima.';
+        diplomaPanel.style.display = 'none';
+      }
+
+      showScreen('final');
     }
 
     function displayFinalCard() {
-        const name = document.getElementById('champion-name').value.trim();
-        if (name) {
-            const randomNumber = Math.floor(10000 + Math.random() * 90000); 
-            
-            cardName.textContent = name.toUpperCase();
-            secretNumberElement.textContent = `Tu número secreto es ${randomNumber}`;
-            
-            finalCard.style.display = 'block';
-            document.getElementById('champion-name').disabled = true;
-            document.querySelector('.modal-content button').disabled = true; // Deshabilita el botón Confirmar
-        } else {
-            alert('Por favor, escribe tu nombre para registrar tu hazaña.');
-        }
+      const name = championName.value.trim();
+      if (!name) {
+        diplomaIntro.textContent = 'Escribe un nombre para crear la tarjeta.';
+        championName.focus();
+        return;
+      }
+
+      const randomNumber = Math.floor(10000 + Math.random() * 90000);
+      cardName.textContent = name;
+      secretNumberElement.textContent = `Número secreto: ${randomNumber}`;
+      finalCard.classList.add('show');
+      championName.disabled = true;
+      diplomaButton.disabled = true;
     }
 
     function handleNameInput(event) {
+      if (event.key === 'Enter') {
+        displayFinalCard();
+      }
+    }
+
+    [inputInfinitivo, inputRaiz, inputDesinencia].forEach((input, index, inputs) => {
+      input.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
-            displayFinalCard();
+          event.preventDefault();
+          if (index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          } else if (!checkButton.classList.contains('hidden')) {
+            checkAnswer();
+          } else {
+            nextQuestion();
+          }
         }
-    }
-
-    function checkSecretCode(event) {
-        if (event.key === 'Enter') {
-            if (secretCodeInput.value === SECRET_CODE) {
-                // Saltar al penúltimo índice (49)
-                currentQuestionIndex = VERBOS.length - 1; 
-                score = VERBOS.length - 1; // 49 puntos
-                alert("Código aceptado. Saltando a la última pregunta con 49 puntos.");
-                loadQuestion();
-            } else {
-                alert("Código incorrecto.");
-            }
-            secretCodeInput.value = ''; // Limpiar el campo de código
-        }
-    }
-
-
-    function initGame() {
-        shuffledVerbos = shuffleArray([...VERBOS]); 
-        currentQuestionIndex = 0;
-        score = 0;
-        loadQuestion();
-    }
-
-    // Inicializar el juego al cargar la página
-    initGame();
-</script>
-
+      });
+    });
+  </script>
 </body>
-
 </html>
